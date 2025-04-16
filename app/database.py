@@ -1,14 +1,14 @@
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
+from functools import lru_cache
 
 load_dotenv()
 
-MONGO_URI = os.getenv("MONGO_URI")
-
-client = MongoClient(MONGO_URI)
-db = client["ataxx"]
-games_collection = db["games"]
-
+@lru_cache(maxsize=1)
 def get_db():
-    return games_collection
+    mongo_uri = os.getenv("MONGO_URI")
+    client = MongoClient(mongo_uri)
+    db = client["ataxx"]
+    return db["games"]
+
